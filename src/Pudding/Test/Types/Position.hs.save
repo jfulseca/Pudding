@@ -1,0 +1,32 @@
+{-# OPTIONS_GHC -F -pgmF htfpp #-}
+
+module Pudding.Test.Types.Position 
+(htf_thisModulesTests) where
+
+import Test.Framework
+import Pudding.Test.Aux (assertTrue)
+import Pudding.Types.Internal.Position
+
+instance Arbitrary SphereAngles where
+  arbitrary = do
+    theta <- arbitrary
+    phi <- arbitrary
+    return $ SphereAngles theta phi
+
+instance Arbitrary Position where
+  arbitrary =
+    oneof [ SpherePosition <$> arbitrary ]
+
+north :: Position
+north = createSpherical 0 0
+
+test_moveNorthPolarOne =
+  assertTrue $ (createSpherical 1 0) `positionEq` (north `move` (createSpherical 1 0))
+
+test_moveNorthAzimuthalOne =
+  assertTrue $ (createSpherical 0 1) `positionEq` (north `move` (createSpherical 0 1))
+
+moveTest p1@(SpherePosition (SphereAngles theta1 phi1)) p2 = (p1 `move` (createSpherical 1 0)) `positionEq` createSpherical (theta + 1) phi
+
+prop_movePolarOne :: Position -> Bool
+prop_movePolarOne p1@(SpherePosition (SphereAngles theta phi)) = (p1 `move` (createSpherical 1 0)) `positionEq` createSpherical (theta + 1) phi
