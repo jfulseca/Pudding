@@ -2,3 +2,4 @@ dist/
 .HTF
 .cabal-sandbox/
 cabal.sandbox.config
+/**/*.save.*
