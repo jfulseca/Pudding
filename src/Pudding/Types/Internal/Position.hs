@@ -26,6 +26,7 @@ createSpherical theta phi =
 distance :: Position -> Position -> Double
 distance (SpherePosition p1) (SpherePosition p2) =
   p1 `chordLength` p2
+distance _ _ = undefined
 
 move :: Position -> Position -> Position
 move (SpherePosition p1) (SpherePosition p2) =

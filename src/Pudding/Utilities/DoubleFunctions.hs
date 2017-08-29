@@ -17,6 +17,5 @@ compareDouble precision d1 d2 =
   abs ((d2 - d1) / d1) < precision
 
 doubleEq :: Double -> Double -> Bool
-doubleEq 0 d = d == 0
-doubleEq d 0 = d == 0
+doubleEq 0 d = d < 5e-11
 doubleEq d1 d2 = compareDouble 5e-11 d1 d2
