@@ -3,7 +3,7 @@
 module Pudding.Test.Types.SphereAngles
 (htf_thisModulesTests) where
 
-import Data.Complex hiding (polar)
+import Data.Complex
 import Test.Framework
 import Pudding.Test.Aux (assertTrue)
 import Pudding.Types.Internal.SphereAngles
@@ -37,11 +37,5 @@ prop_spinorBounds a =
   (abs . realPart $ vCoordinate s) <=1
     where s = toSpinor a
 
-prop_chordLengthZero :: SphereAngles -> Bool
-prop_chordLengthZero a =
-  (a `chordLength` a) `doubleEq` 0
+prop_chordLengthZero :: SpinorCoordinates -> Bool
 
-prop_chordLengthOpposite :: SphereAngles -> Bool
-prop_chordLengthOpposite a =
-  (a `chordLength` opposite) `doubleEq` 2 where
-    opposite = normalize $ a {polar = (polar a + pi)}

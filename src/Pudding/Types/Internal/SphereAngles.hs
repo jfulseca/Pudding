@@ -9,6 +9,7 @@ module Pudding.Types.Internal.SphereAngles
 , normalize
 , rotate
 , sphereAnglesEq
+, spinorProduct
 , toSpinor
 ) where
 
@@ -41,10 +42,15 @@ toSpinor (SphereAngles theta phi) =
     sinPhiHalf = sin $ phiHalf
     phiHalf = phi / 2
 
+spinorProduct :: SpinorCoordinates -> SpinorCoordinates -> (Complex Double)
+spinorProduct (SpinorCoordinates u1 v1) (SpinorCoordinates u2 v2) =
+  u1 * v2 - u2 * v1
+
 chordLength :: SphereAngles -> SphereAngles -> Double
-chordLength a1 a2 = realPart . abs $ u1 * v2 - u2 * v1 where
-  SpinorCoordinates u1 v1 = toSpinor a1
-  SpinorCoordinates u2 v2 = toSpinor a2
+chordLength a1 a2 =
+  2.0 * (realPart . abs $ spinorProduct s1 s2) where
+    s1 = toSpinor a1
+    s2 = toSpinor a2
 
 arcLength :: SphereAngles -> SphereAngles -> Double
 arcLength = undefined
