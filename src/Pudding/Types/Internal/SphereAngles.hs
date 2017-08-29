@@ -2,9 +2,10 @@ module Pudding.Types.Internal.SphereAngles
 
 ( Angle
 , SphereAngles(..)
-, SpinorCoordinates
+, SpinorCoordinates(..)
 , arcLength
 , chordLength
+, limitAngle
 , normalize
 , rotate
 , sphereAnglesEq
@@ -16,13 +17,6 @@ import Pudding.Utilities.ComplexFunctions
 import Pudding.Utilities.DoubleFunctions
 
 type Angle = Double
-
-roundDown :: Double -> Double
-roundDown = fromIntegral . floor
-
-fmod :: Double -> Double -> Double
-fmod x y = x - n * y
-  where n = roundDown $ x / y 
 
 limitAngle :: Angle -> Angle
 limitAngle = flip fmod $ 2 * pi

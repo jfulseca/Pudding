@@ -7,6 +7,18 @@ import Test.Framework
 import Test.HUnit
 import Pudding.Utilities.DoubleFunctions
 
+prop_fmodCutoff :: Double -> (NonZero Double) -> Bool
+prop_fmodCutoff a (NonZero b) = (abs (a `fmod` b)) < (abs b)
+
+prop_fmodPeriod :: Double -> (NonZero Double) -> Bool
+prop_fmodPeriod a (NonZero b) = (a `fmod` b) `doubleEq` ((a + b) `fmod` b)
+
+prop_fmodSmallerPositive :: (Positive Double) -> Double -> Property
+prop_fmodSmallerPositive (Positive a) b = (a < b) ==> (a `fmod` b) `doubleEq` a
+
+prop_fmodSmallerNegative :: (Positive Double) -> Double -> Property
+prop_fmodSmallerNegative (Positive a) b = (a < b) ==> ((-a) `fmod` b) `doubleEq` (b - a)
+
 equalTest :: Double -> Assertion
 equalTest d = assertEqual True $ d `doubleEq` d
 
