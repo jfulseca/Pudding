@@ -34,6 +34,7 @@ test-suite test
                     ,  Pudding.Test.Aux
                     ,  Pudding.Test.Types.Position
                     ,  Pudding.Test.Types.SphereAngles
+                    ,  Pudding.Test.Utilities.ComplexFunctions
                     ,  Pudding.Test.Utilities.DoubleFunctions
                     ,  Pudding.Utilities.ComplexFunctions
                     ,  Pudding.Utilities.DoubleFunctions
