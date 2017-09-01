@@ -17,7 +17,9 @@ cabal-version:       >=2.0
 
 executable pudding
   main-is:             main.hs   
-  other-modules:       Pudding.Types.Position
+  other-modules:       Pudding.Types.Configuration
+                    ,  Pudding.Types.Position
+                    ,  Pudding.Types.Internal.Configuration
                     ,  Pudding.Types.Internal.Position
                     ,  Pudding.Types.Internal.SphereAngles
                     ,  Pudding.Utilities.ComplexFunctions
@@ -25,12 +27,15 @@ executable pudding
   build-depends:       base >= 4.6
   hs-source-dirs:      src
   default-language:    Haskell2010
+  ghc-options:         -Wall
 
 test-suite test
   type:                exitcode-stdio-1.0
   main-is:             mainTest.hs
-  other-modules:       Pudding.Types.Internal.Position
+  other-modules:       Pudding.Types.Internal.Configuration
+                    ,  Pudding.Types.Internal.Position
                     ,  Pudding.Types.Internal.SphereAngles
+                    ,  Pudding.Types.Position
                     ,  Pudding.Test.Aux
                     ,  Pudding.Test.Types.Position
                     ,  Pudding.Test.Types.SphereAngles
@@ -41,3 +46,4 @@ test-suite test
   build-depends:       base >= 4.6, HTF, HUnit
   hs-source-dirs:      src
   default-language:    Haskell2010
+  ghc-options:        -Wall

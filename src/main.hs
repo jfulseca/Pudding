@@ -1,3 +1,2 @@
-import Pudding.Types.Position
-
+main :: IO ()
 main = putStrLn "boing"

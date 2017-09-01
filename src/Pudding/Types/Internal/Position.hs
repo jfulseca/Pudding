@@ -8,7 +8,6 @@ module Pudding.Types.Internal.Position
 ) where
 
 import Pudding.Types.Internal.SphereAngles
-import Pudding.Utilities.DoubleFunctions
 
 data Position = SpherePosition SphereAngles | PlanePosition Int
   deriving (Show)
