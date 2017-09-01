@@ -19,6 +19,9 @@ instance Arbitrary SphereAngles where
 north :: SphereAngles
 north = SphereAngles 0 0
 
+south :: SphereAngles
+south = SphereAngles pi 0
+
 prop_limitAngleLimit :: Angle -> Bool
 prop_limitAngleLimit a = limitAngle a <= 2 * pi
 
@@ -41,7 +44,22 @@ prop_chordLengthZero :: SphereAngles -> Bool
 prop_chordLengthZero a =
   (a `chordLength` a) `doubleEq` 0
 
-prop_chordLengthOpposite :: SphereAngles -> Bool
-prop_chordLengthOpposite a =
+prop_chordLengthOppositePolar :: SphereAngles -> Bool
+prop_chordLengthOppositePolar a =
   (a `chordLength` opposite) `doubleEq` 2 where
-    opposite = normalize $ a {polar = (polar a + pi)}
+    opposite = a `rotate` south
+
+prop_chordLengthHalfPolar :: SphereAngles -> Bool
+prop_chordLengthHalfPolar a =
+  (a `chordLength` half) `doubleEq` (sqrt 2) where
+    half = a `rotate` (SphereAngles (pi / 2) 0)
+
+prop_chordLengthOppositeAzimuthal :: SphereAngles -> Bool
+prop_chordLengthOppositeAzimuthal a@(SphereAngles theta _) =
+  (a `chordLength` opposite) `doubleEq` (2 * (abs $ sin theta)) where
+    opposite = a `rotate` (SphereAngles 0 pi)  
+
+prop_chordLengthHalfAzimuthal :: SphereAngles -> Bool
+prop_chordLengthHalfAzimuthal a@(SphereAngles theta _) =
+  (a `chordLength` half) `doubleEq` ((sqrt 2) * (abs $ sin theta)) where
+    half = a `rotate` (SphereAngles 0 (pi / 2))  

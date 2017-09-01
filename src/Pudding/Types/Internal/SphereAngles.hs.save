@@ -58,21 +58,17 @@ arcLength = undefined
 normalize :: SphereAngles -> SphereAngles
 normalize (SphereAngles theta phi) =
   SphereAngles theta'' (limitAngle phi') where
-    theta' = limitAngle theta
-    (theta'', phi')
-      | theta' < 0 = (-theta', phi + pi)
-      | theta' > pi = (2 * pi - theta', phi + pi)
-      | otherwise = (theta', phi)
+    (theta', phi') = (limitAngle theta
+    (theta'', phi'')
+      | theta' < 0 = (-theta', phi' + pi)
+      | theta' > pi = (2 * pi - theta', phi' + pi)
+      | otherwise = (theta', phi')
 
 sphereAnglesEq :: SphereAngles -> SphereAngles -> Bool
-sphereAnglesEq a1 a2
-  | theta1' `doubleEq` 0 = theta2' `doubleEq` 0
-  | theta2' `doubleEq` 0 = theta1' `doubleEq` 0
-  | theta1' `doubleEq` pi = theta2' `doubleEq` pi
-  | theta2' `doubleEq` 0 = theta1' `doubleEq` pi
-  | otherwise = theta1' `doubleEq` theta2' && phi1' `doubleEq` phi2'
-  where SphereAngles theta1' phi1' = normalize a1
-        SphereAngles theta2' phi2' = normalize a2
+sphereAnglesEq a1 a2 =
+  theta1' `doubleEq` theta2' && phi1' `doubleEq` phi2' where
+    SphereAngles theta1' phi1' = normalize a1
+    SphereAngles theta2' phi2' = normalize a2
 
 rotate :: SphereAngles -> SphereAngles -> SphereAngles
 rotate (SphereAngles theta1 phi1) (SphereAngles theta2 phi2) =

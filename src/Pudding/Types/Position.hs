@@ -1,9 +1,9 @@
 module Pudding.Types.Position
 
 ( Position 
-, createSpherical
 , distance
 , move
+, placeOnSphere
 ) where
 
 import Pudding.Types.Internal.Position
