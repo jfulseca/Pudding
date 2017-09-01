@@ -18,6 +18,11 @@ positionEq (SpherePosition p1) (SpherePosition p2) =
   p1 `sphereAnglesEq` p2
 positionEq _ _ = undefined
 
+instance Eq Position where
+  (==) (SpherePosition p1) (SpherePosition p2) =
+    p1 == p2
+  (==) _ _ = undefined
+
 placeOnSphere :: Angle -> Angle -> Position
 placeOnSphere theta phi =
   SpherePosition $ angles

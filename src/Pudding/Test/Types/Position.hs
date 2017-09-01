@@ -16,6 +16,29 @@ instance Arbitrary Position where
 sphereNorth :: Position
 sphereNorth = placeOnSphere 0 0
 
+prop_sphereEqSelf :: Position -> Bool
+prop_sphereEqSelf p = p == p
+
+prop_sphereEqDifferent :: Position -> Position -> Property
+prop_sphereEqDifferent p1@(SpherePosition (SphereAngles theta1 _)) p2@(SpherePosition (SphereAngles theta2 _)) =
+  (theta1 /= 0 && theta2 /= 0) ==> p1 /= p2
+
+prop_sphereEqNorth :: Angle -> Angle -> Bool
+prop_sphereEqNorth phi1 phi2 = p1 == p2
+  where p1 = placeOnSphere 0 phi1
+        p2 = placeOnSphere 0 phi2
+
+prop_sphereEqSouth :: Angle -> Angle -> Bool
+prop_sphereEqSouth phi1 phi2 = p1 == p2
+  where p1 = placeOnSphere pi phi1
+        p2 = placeOnSphere pi phi2
+
+prop_sphereEqNorthSouth :: Angle -> Angle -> Bool
+prop_sphereEqNorthSouth phi1 phi2 = p1 /= p2
+  where p1 = placeOnSphere 0 phi1
+        p2 = placeOnSphere pi phi2
+
+
 prop_sphereLimits :: Angle -> Angle -> Bool
 prop_sphereLimits theta phi =
   let (SpherePosition (SphereAngles theta' phi')) = placeOnSphere theta phi in
@@ -23,48 +46,48 @@ prop_sphereLimits theta phi =
 
 prop_spherePolarPeriodicForwardFull :: Angle -> Angle -> Bool
 prop_spherePolarPeriodicForwardFull theta phi =
-  p `positionEq` p' where
+  p == p' where
     p = placeOnSphere theta phi
     p' = placeOnSphere (theta + 2 * pi) phi
 
 prop_spherePolarPeriodicForwardHalf :: Angle -> Angle -> Bool
 prop_spherePolarPeriodicForwardHalf theta phi =
-  p `positionEq` p' where
+  p == p' where
     p = placeOnSphere (theta + pi) phi
     p' = placeOnSphere (pi - theta) (phi + pi)
 
 prop_spherePolarPeriodicBackwardFull :: Angle -> Angle -> Bool
 prop_spherePolarPeriodicBackwardFull theta phi =
-  p `positionEq` p' where
+  p == p' where
     p = placeOnSphere theta phi
     p' = placeOnSphere (theta - 2 * pi) phi
 
 prop_spherePolarPeriodicBackwardHalf :: Angle -> Angle -> Bool
 prop_spherePolarPeriodicBackwardHalf theta phi =
-  p `positionEq` p' where
+  p == p' where
     p = placeOnSphere (theta - pi) phi
     p' = placeOnSphere (pi - theta) (phi + pi)
 
 prop_sphereAzimuthalPeriodicForward :: Angle -> Angle -> Bool
 prop_sphereAzimuthalPeriodicForward theta phi =
-  p `positionEq` p' where
+  p == p' where
     p = placeOnSphere theta phi
     p' = placeOnSphere theta (phi + 2 * pi)
 
 prop_sphereAzimuthalPeriodicBackward :: Angle -> Angle -> Bool
 prop_sphereAzimuthalPeriodicBackward theta phi =
-  p `positionEq` p' where
+  p == p' where
     p = placeOnSphere theta phi
     p' = placeOnSphere theta (phi - 2 * pi)
 
 test_moveSphereNorthPolarOne =
-  assertTrue $ (placeOnSphere 1 0) `positionEq` (sphereNorth `move` (placeOnSphere 1 0))
+  assertTrue $ (placeOnSphere 1 0) == (sphereNorth `move` (placeOnSphere 1 0))
 
 test_moveSphereNorthAzimuthalOne =
-  assertTrue $ (placeOnSphere 0 1) `positionEq` (sphereNorth `move` (placeOnSphere 0 1))
+  assertTrue $ (placeOnSphere 0 1) == (sphereNorth `move` (placeOnSphere 0 1))
 
 moveTest :: Position -> (Position -> Position) -> Position -> Bool
-moveTest p2 f p1 = (p1 `move` p2) `positionEq` (f p1)
+moveTest p2 f p1 = (p1 `move` p2) == (f p1)
 
 prop_moveSphereZero :: Position -> Bool
 prop_moveSphereZero = moveTest sphereNorth moveZero where

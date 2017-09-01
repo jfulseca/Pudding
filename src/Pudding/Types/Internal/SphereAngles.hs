@@ -74,6 +74,9 @@ sphereAnglesEq a1 a2
   where SphereAngles theta1' phi1' = normalize a1
         SphereAngles theta2' phi2' = normalize a2
 
+instance Eq SphereAngles where
+  (==) = sphereAnglesEq
+
 rotate :: SphereAngles -> SphereAngles -> SphereAngles
 rotate (SphereAngles theta1 phi1) (SphereAngles theta2 phi2) =
   normalize $ SphereAngles (theta1 + theta2) (phi1 + phi2)
