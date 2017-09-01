@@ -2,6 +2,7 @@ module Pudding.Types.Position
 
 ( Position 
 , distance
+, generateSpherePosition
 , move
 , placeOnSphere
 ) where

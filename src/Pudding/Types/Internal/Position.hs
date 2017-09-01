@@ -2,12 +2,14 @@ module Pudding.Types.Internal.Position
 
 ( Position(..)
 , distance
+, generateSpherePosition
 , move
 , positionEq
 , placeOnSphere
 ) where
 
 import Pudding.Types.Internal.SphereAngles
+import System.Random (StdGen)
 
 data Position = SpherePosition SphereAngles | PlanePosition Int
   deriving (Show)
@@ -36,3 +38,8 @@ move :: Position -> Position -> Position
 move (SpherePosition p1) (SpherePosition p2) =
   SpherePosition $ p1 `rotate` p2
 move _ _ = undefined
+
+generateSpherePosition :: StdGen -> (Position, StdGen)
+generateSpherePosition gen =
+  (SpherePosition angles, gen')
+  where (angles, gen') = generateAngles gen

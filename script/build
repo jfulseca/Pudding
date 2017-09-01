@@ -1,0 +1,6 @@
+set -euo pipefail
+
+cabal configure
+cabal build
+
+set +euo pipefail

@@ -5,6 +5,7 @@ module Pudding.Types.Internal.SphereAngles
 , SpinorCoordinates(..)
 , arcLength
 , chordLength
+, generateAngles
 , limitAngle
 , normalize
 , rotate
@@ -16,6 +17,7 @@ module Pudding.Types.Internal.SphereAngles
 import Data.Complex
 import Pudding.Utilities.ComplexFunctions
 import Pudding.Utilities.DoubleFunctions
+import System.Random (StdGen, randomR)
 
 type Angle = Double
 
@@ -80,3 +82,8 @@ instance Eq SphereAngles where
 rotate :: SphereAngles -> SphereAngles -> SphereAngles
 rotate (SphereAngles theta1 phi1) (SphereAngles theta2 phi2) =
   normalize $ SphereAngles (theta1 + theta2) (phi1 + phi2)
+
+generateAngles :: StdGen -> (SphereAngles, StdGen)
+generateAngles gen = (SphereAngles theta phi, gen'')
+  where (theta, gen') = randomR (0.0, pi) gen
+        (phi, gen'') = randomR (0.0, 2 * pi) gen'
