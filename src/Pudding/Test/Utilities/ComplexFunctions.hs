@@ -5,7 +5,6 @@ module Pudding.Test.Utilities.ComplexFunctions
 
 import Data.Complex
 import Test.Framework
-import Test.HUnit
 import Pudding.Utilities.ComplexFunctions
 import Pudding.Utilities.DoubleFunctions
 

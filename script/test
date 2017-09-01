@@ -1,5 +1,11 @@
 set -euo pipefail
-cabal configure --enable-tests
+
+cabal configure --enable-tests --enable-coverage
 cabal build
 cabal test
+
+echo ""
+
+hpc report --hpcdir dist/hpc/vanilla/mix/test dist/hpc/vanilla/tix/test/test.tix
+
 set +euo pipefail
