@@ -10,9 +10,7 @@ import Pudding.Types.Internal.Configuration
 import Pudding.Types.PolarAngles
 import System.Random (mkStdGen)
 
-test_createExampleSphereConfiguration =
-  assertTrue $ V.length (V.fromList [placeOnSphere 0 0]) == 1
-
 prop_generateSphereLength :: Int -> (Positive Int) -> Bool
 prop_generateSphereLength genInt (Positive n) =
-  length (fst (generateSphereConfiguration (mkStdGen genInt) n)) == n
+  length v == n where
+    (Sphere v) = fst (generateSphereConfiguration (mkStdGen genInt) n)

@@ -1,5 +1,5 @@
 module Pudding.Types.Internal.Configuration
-( Configuration
+( Configuration(..)
 , generateSphereConfiguration
 ) where
 
@@ -8,11 +8,11 @@ import Pudding.Types.PolarAngles
 import Pudding.Utilities.RandomFunctions (randomList)
 import System.Random (StdGen)
 
-type Configuration = V.Vector PolarAngles
+data Configuration = Sphere (V.Vector PolarAngles)
 
 generateSphereConfiguration :: StdGen -> Int -> (Configuration, StdGen)
 generateSphereConfiguration gen n =
-  (V.fromList positionList, gen'') where
+  (Sphere $ V.fromList positionList, gen'') where
     (thetaList, gen') = randomList (0, pi) n gen
     (phiList, gen'') = randomList (0, 2 * pi) n gen'
     positionList = zipWith placeOnSphere thetaList phiList
