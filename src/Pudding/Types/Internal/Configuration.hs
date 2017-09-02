@@ -1,5 +1,5 @@
 module Pudding.Types.Internal.Configuration
-( Configuration(..)
+( Configuration
 , generateSphereConfiguration
 ) where
 
