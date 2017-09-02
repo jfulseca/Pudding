@@ -18,12 +18,9 @@ cabal-version:       >=2.0
 executable pudding
   main-is:             main.hs   
   other-modules:       Pudding.Types.Configuration
-                    ,  Pudding.Types.Position
                     ,  Pudding.Types.PolarAngles
                     ,  Pudding.Types.Internal.Configuration
-                    ,  Pudding.Types.Internal.Position
                     ,  Pudding.Types.Internal.PolarAngles
-                    ,  Pudding.Types.Internal.SphereAngles
                     ,  Pudding.Utilities.ComplexFunctions
                     ,  Pudding.Utilities.DoubleFunctions
                     ,  Pudding.Utilities.RandomFunctions
@@ -36,15 +33,12 @@ test-suite test
   type:                exitcode-stdio-1.0
   main-is:             mainTest.hs
   other-modules:       Pudding.Types.Internal.Configuration
-                    ,  Pudding.Types.Internal.Position
                     ,  Pudding.Types.Internal.PolarAngles
-                    ,  Pudding.Types.Internal.SphereAngles
-                    ,  Pudding.Types.Position
+                    ,  Pudding.Types.Configuration
+                    ,  Pudding.Types.PolarAngles
                     ,  Pudding.Test.Aux
                     ,  Pudding.Test.Types.Configuration
                     ,  Pudding.Test.Types.PolarAngles
-                    ,  Pudding.Test.Types.Position
-                    ,  Pudding.Test.Types.SphereAngles
                     ,  Pudding.Test.Utilities.ComplexFunctions
                     ,  Pudding.Test.Utilities.DoubleFunctions
                     ,  Pudding.Utilities.ComplexFunctions
