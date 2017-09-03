@@ -4,11 +4,12 @@ module Pudding.Types.Internal.Configuration
 ) where
 
 import qualified Data.Vector as V
-import Pudding.Types.PolarAngles
 import Pudding.Utilities.RandomFunctions (randomList)
+import Pudding.Types.PolarAngles
 import System.Random (StdGen)
 
 data Configuration = Sphere (V.Vector PolarAngles)
+  deriving (Eq, Show)
 
 generateSphereConfiguration :: StdGen -> Int -> (Configuration, StdGen)
 generateSphereConfiguration gen n =

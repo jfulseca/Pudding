@@ -16,7 +16,7 @@ build-type:          Simple
 cabal-version:       >=2.0
 
 executable pudding
-  main-is:             main.hs   
+  main-is:             Main/pudding.hs
   other-modules:       Pudding.Types.Configuration
                     ,  Pudding.Types.PolarAngles
                     ,  Pudding.Types.Internal.Configuration
@@ -24,6 +24,7 @@ executable pudding
                     ,  Pudding.Utilities.ComplexFunctions
                     ,  Pudding.Utilities.DoubleFunctions
                     ,  Pudding.Utilities.RandomFunctions
+                    ,  Pudding.Utilities.VectorFunctions
   build-depends:       base >= 4.6, random, vector
   hs-source-dirs:      src
   default-language:    Haskell2010
@@ -31,7 +32,7 @@ executable pudding
 
 test-suite test
   type:                exitcode-stdio-1.0
-  main-is:             mainTest.hs
+  main-is:             Main/test.hs
   other-modules:       Pudding.Types.Internal.Configuration
                     ,  Pudding.Types.Internal.PolarAngles
                     ,  Pudding.Types.Configuration
@@ -47,4 +48,4 @@ test-suite test
   build-depends:       base >= 4.6, HTF, HUnit, random, vector
   hs-source-dirs:      src
   default-language:    Haskell2010
-  ghc-options:        -Wall -Wno-missing-signatures
+  ghc-options:         -Wall -Wno-missing-signatures
