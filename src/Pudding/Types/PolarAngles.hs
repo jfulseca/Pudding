@@ -1,6 +1,7 @@
 module Pudding.Types.PolarAngles
 
 ( PolarAngles
+, SpinorCoordinates
 , chordLength 
 , placeOnSphere
 , rotate

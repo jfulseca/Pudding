@@ -74,8 +74,15 @@ polarAnglesEq a1 a2
   where PolarAngles theta1' phi1' = normalize a1
         PolarAngles theta2' phi2' = normalize a2
 
+spinorCoordinatesEq :: SpinorCoordinates -> SpinorCoordinates -> Bool
+spinorCoordinatesEq (SpinorCoordinates u1 v1) (SpinorCoordinates u2 v2) =
+  u1 `complexEq` u2 && v1 `complexEq` v2
+
 instance Eq PolarAngles where
   (==) = polarAnglesEq
+
+instance Eq SpinorCoordinates where
+  (==) = spinorCoordinatesEq
 
 rotate :: PolarAngles -> PolarAngles -> PolarAngles
 rotate (PolarAngles theta1 phi1) (PolarAngles theta2 phi2) =
