@@ -1,6 +1,7 @@
 module Pudding.Utilities.ComplexFunctions
 (
-  complexEq
+  cabs
+, complexEq
 , scaleComplex
 ) where
 
@@ -13,3 +14,6 @@ complexEq a b = (realPart a) `doubleEq` (realPart b) &&
 
 scaleComplex :: Double -> Complex Double -> Complex Double
 scaleComplex a b = (a :+ 0) * b
+
+cabs :: (Complex Double) -> Double
+cabs = realPart . abs
