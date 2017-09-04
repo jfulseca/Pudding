@@ -5,7 +5,7 @@ module Pudding.Utilities.DoubleFunctions
 ) where
 
 roundDown :: Double -> Double
-roundDown = fromIntegral . floor 
+roundDown = (fromIntegral :: Int -> Double) . floor
 
 fmod :: Double -> Double -> Double
 fmod _ 0 = error "fmod with second argument 0 is undefined"

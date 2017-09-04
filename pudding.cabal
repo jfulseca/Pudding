@@ -17,7 +17,9 @@ cabal-version:       >=2.0
 
 executable pudding
   main-is:             Main/pudding.hs
-  other-modules:       Pudding.Types.Configuration
+  other-modules:       Pudding.Observables.SimpleObservable
+                    ,  Pudding.Observables.Energy
+                    ,  Pudding.Types.Configuration
                     ,  Pudding.Types.PolarAngles
                     ,  Pudding.Types.Internal.Configuration
                     ,  Pudding.Types.Internal.PolarAngles
@@ -33,11 +35,15 @@ executable pudding
 test-suite test
   type:                exitcode-stdio-1.0
   main-is:             Main/test.hs
-  other-modules:       Pudding.Types.Internal.Configuration
+  other-modules:       Pudding.Observables.SimpleObservable
+                    ,  Pudding.Observables.Energy
+                    ,  Pudding.Types.Internal.Configuration
                     ,  Pudding.Types.Internal.PolarAngles
                     ,  Pudding.Types.Configuration
                     ,  Pudding.Types.PolarAngles
                     ,  Pudding.Test.Aux
+                    ,  Pudding.Test.Observables.Energy
+                    ,  Pudding.Test.Observables.SimpleObservable
                     ,  Pudding.Test.Types.Configuration
                     ,  Pudding.Test.Types.PolarAngles
                     ,  Pudding.Test.Utilities.ComplexFunctions
