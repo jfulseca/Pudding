@@ -1,14 +1,12 @@
 module Pudding.Observables.SimpleObservable
-( SimpleObservable (..)
+( SimpleObservable
+, liftSimple
 ) where
 
-import Data.Complex
-import Pudding.Types.Configuration
+import Pudding.Observables.Observable
+import Pudding.Types.Configuration (Configuration)
 
-data SimpleObservable = SimpleObservable {
-  evaluate :: Configuration -> (Complex Double)
-, name :: String
-}
+type SimpleObservable a = Configuration -> a
 
-instance Show SimpleObservable where
-  show = name
+liftSimple :: (SimpleObservable a) -> (Observable a)
+liftSimple = undefined

@@ -2,6 +2,7 @@
 
 module Pudding.Types.Internal.Configuration
 ( Configuration(..)
+, Samples
 , emptySphere
 , generateSphereConfiguration
 , swap
@@ -20,6 +21,8 @@ data Configuration =
   , spinors :: Vector SpinorCoordinates
   }
   deriving (Eq, Show)
+
+type Samples = [Configuration]
 
 emptySphere :: Configuration
 emptySphere = Sphere {

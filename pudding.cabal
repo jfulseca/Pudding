@@ -17,11 +17,14 @@ cabal-version:       >=2.0
 
 executable pudding
   main-is:             Main/pudding.hs
-  other-modules:       Pudding.Observables.SimpleObservable
-                    ,  Pudding.Observables.Energy
+  other-modules:       Pudding.Observables.Energy
+                    ,  Pudding.Observables.Observable
+                    ,  Pudding.Observables.SimpleObservable
                     ,  Pudding.Storage.ConfigurationSamples
+                    ,  Pudding.Storage.Binary
                     ,  Pudding.Storage.FileIO
                     ,  Pudding.Storage.Header
+                    ,  Pudding.Storage.Internal.Binary
                     ,  Pudding.Types.Configuration
                     ,  Pudding.Types.PolarAngles
                     ,  Pudding.Types.Internal.Configuration
@@ -31,9 +34,10 @@ executable pudding
                     ,  Pudding.Utilities.RandomFunctions
                     ,  Pudding.Utilities.VectorFunctions
   build-depends:       base >= 4.6
-                    , bytestring
-                    , random
-                    , vector
+                     , binary
+                     , bytestring
+                     , random
+                     , vector
   hs-source-dirs:      src
   default-language:    Haskell2010
   ghc-options:         -Wall

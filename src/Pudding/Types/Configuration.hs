@@ -1,6 +1,7 @@
 module Pudding.Types.Configuration
 
 ( Configuration(..)
+, Samples
 , emptySphere
 , generateSphereConfiguration
 , swap
