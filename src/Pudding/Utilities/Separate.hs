@@ -1,5 +1,3 @@
-{-# LANGUAGE FlexibleInstances #-}
-
 module Pudding.Utilities.Separate
 ( Separate
 , neutral
@@ -31,13 +29,13 @@ instance Separate Double where
   ssqrt = sqrt
   ssub = (-)
 
-instance Separate (Complex Double) where
+instance (RealFloat a, Separate a) => Separate (Complex a) where
   neutral = 0 :+ 0
   sadd = (+)
   (x1 :+ y1) `sdiv` (x2 :+ y2) =
     (x1 / x2) :+ (y1 / y2)
   (x1 :+ y1) `smul` (x2 :+ y2) =
     (x1 * x2) :+ (y1 * y2)
-  d `sscale` z = (*d) <$> z
+  d `sscale` z = (sscale d) <$> z
   ssqrt z = sqrt <$> z
   ssub = (-)
