@@ -1,5 +1,6 @@
 module Pudding.Observables.Observable
 ( Observable
+, Result(..)
 ) where
 
 import Pudding.Types.Configuration (Samples)

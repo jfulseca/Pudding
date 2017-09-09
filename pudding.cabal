@@ -32,6 +32,7 @@ executable pudding
                     ,  Pudding.Utilities.ComplexFunctions
                     ,  Pudding.Utilities.DoubleFunctions
                     ,  Pudding.Utilities.RandomFunctions
+                    ,  Pudding.Utilities.Separate
                     ,  Pudding.Utilities.VectorFunctions
   build-depends:       base >= 4.6
                      , binary
