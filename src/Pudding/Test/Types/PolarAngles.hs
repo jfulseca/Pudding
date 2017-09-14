@@ -8,7 +8,8 @@ import Test.Framework
 import Pudding.Test.Aux (assertTrue)
 import Pudding.Types.Internal.PolarAngles
 import Pudding.Utilities.DoubleFunctions
-import Pudding.Utilities.ComplexFunctions
+--import Pudding.Utilities.ComplexFunctions
+import Pudding.Utilities.FloatEq
 
 instance Arbitrary PolarAngles where
   arbitrary = do
@@ -27,11 +28,11 @@ prop_limitAngleLimit a = limitAngle a <= 2 * pi
 
 prop_limitAnglePeriod :: Angle -> Bool
 prop_limitAnglePeriod a =
-  (limitAngle a) `doubleEq` (limitAngle $ a + 2 * pi)
+  (limitAngle a) ~= (limitAngle $ a + 2 * pi)
 
 test_northSpinor =
-  assertTrue $ (uCoordinate northSpinor) `complexEq` (1 :+ 0 ) &&
-  (vCoordinate northSpinor) `complexEq` (0 :+ 0)
+  assertTrue $ (uCoordinate northSpinor) ~= (1 :+ 0 ) &&
+  (vCoordinate northSpinor) ~= (0 :+ 0)
     where northSpinor = toSpinor north
 
 prop_spinorBounds :: PolarAngles -> Bool
@@ -42,47 +43,47 @@ prop_spinorBounds a =
 
 prop_chordLengthZero :: PolarAngles -> Bool
 prop_chordLengthZero a =
-  (a `chordLength` a) `doubleEq` 0
+  (a `chordLength` a) ~= 0
 
 prop_chordLengthOppositePolar :: PolarAngles -> Bool
 prop_chordLengthOppositePolar a =
-  (a `chordLength` opposite) `doubleEq` 2 where
+  (a `chordLength` opposite) ~= 2 where
     opposite = a `rotate` south
 
 prop_chordLengthHalfPolar :: PolarAngles -> Bool
 prop_chordLengthHalfPolar a =
-  (a `chordLength` half) `doubleEq` (sqrt 2) where
+  (a `chordLength` half) ~= (sqrt 2) where
     half = a `rotate` (PolarAngles (pi / 2) 0)
 
 prop_chordLengthOppositeAzimuthal :: PolarAngles -> Bool
 prop_chordLengthOppositeAzimuthal a@(PolarAngles theta _) =
-  (a `chordLength` opposite) `doubleEq` (2 * (abs $ sin theta)) where
+  (a `chordLength` opposite) ~= (2 * (abs $ sin theta)) where
     opposite = a `rotate` (PolarAngles 0 pi)  
 
 prop_chordLengthHalfAzimuthal :: PolarAngles -> Bool
 prop_chordLengthHalfAzimuthal a@(PolarAngles theta _) =
-  (a `chordLength` half) `doubleEq` ((sqrt 2) * (abs $ sin theta)) where
+  (a `chordLength` half) ~= ((sqrt 2) * (abs $ sin theta)) where
     half = a `rotate` (PolarAngles 0 (pi / 2))  
 
 prop_sphereEqSelf :: PolarAngles -> Bool
-prop_sphereEqSelf p = p == p
+prop_sphereEqSelf p = p ~= p
 
 prop_sphereEqDifferent :: PolarAngles -> PolarAngles -> Property
 prop_sphereEqDifferent p1@(PolarAngles theta1 _) p2@(PolarAngles theta2 _) =
-  (theta1 /= 0 && theta2 /= 0) ==> p1 /= p2
+  (theta1 /= 0 && theta2 /= 0) ==> p1 ~/ p2
 
 prop_sphereEqNorth :: Angle -> Angle -> Bool
-prop_sphereEqNorth phi1 phi2 = p1 == p2
+prop_sphereEqNorth phi1 phi2 = p1 ~= p2
   where p1 = placeOnSphere 0 phi1
         p2 = placeOnSphere 0 phi2
 
 prop_sphereEqSouth :: Angle -> Angle -> Bool
-prop_sphereEqSouth phi1 phi2 = p1 == p2
+prop_sphereEqSouth phi1 phi2 = p1 ~= p2
   where p1 = placeOnSphere pi phi1
         p2 = placeOnSphere pi phi2
 
 prop_sphereEqNorthSouth :: Angle -> Angle -> Bool
-prop_sphereEqNorthSouth phi1 phi2 = p1 /= p2
+prop_sphereEqNorthSouth phi1 phi2 = p1 ~/ p2
   where p1 = placeOnSphere 0 phi1
         p2 = placeOnSphere pi phi2
 
@@ -93,46 +94,46 @@ prop_sphereLimits theta phi =
 
 prop_spherePolarPeriodicForwardFull :: Angle -> Angle -> Bool
 prop_spherePolarPeriodicForwardFull theta phi =
-  p == p' where
+  p ~= p' where
     p = placeOnSphere theta phi
     p' = placeOnSphere (theta + 2 * pi) phi
 
 prop_spherePolarPeriodicForwardHalf :: Angle -> Angle -> Bool
 prop_spherePolarPeriodicForwardHalf theta phi =
-  p == p' where
+  p ~= p' where
     p = placeOnSphere (theta + pi) phi
     p' = placeOnSphere (pi - theta) (phi + pi)
 
 prop_spherePolarPeriodicBackwardFull :: Angle -> Angle -> Bool
 prop_spherePolarPeriodicBackwardFull theta phi =
-  p == p' where
+  p ~= p' where
     p = placeOnSphere theta phi
     p' = placeOnSphere (theta - 2 * pi) phi
 
 prop_spherePolarPeriodicBackwardHalf :: Angle -> Angle -> Bool
 prop_spherePolarPeriodicBackwardHalf theta phi =
-  p == p' where
+  p ~= p' where
     p = placeOnSphere (theta - pi) phi
     p' = placeOnSphere (pi - theta) (phi + pi)
 
 prop_sphereAzimuthalPeriodicForward :: Angle -> Angle -> Bool
 prop_sphereAzimuthalPeriodicForward theta phi =
-  p == p' where
+  p ~= p' where
     p = placeOnSphere theta phi
     p' = placeOnSphere theta (phi + 2 * pi)
 
 prop_sphereAzimuthalPeriodicBackward :: Angle -> Angle -> Bool
 prop_sphereAzimuthalPeriodicBackward theta phi =
-  p == p' where
+  p ~= p' where
     p = placeOnSphere theta phi
     p' = placeOnSphere theta (phi - 2 * pi)
 
 prop_rotateZero :: PolarAngles -> Bool
-prop_rotateZero a = a == a' where
+prop_rotateZero a = a ~= a' where
   a' = a `rotate` north
 
 rotateTest :: (PolarAngles -> PolarAngles) -> PolarAngles -> PolarAngles -> Bool
-rotateTest f a2 a1 = (f a1) == (a1 `rotate` a2)
+rotateTest f a2 a1 = (f a1) ~= (a1 `rotate` a2)
 
 prop_rotatePolarOne :: PolarAngles -> Bool
 prop_rotatePolarOne = rotateTest rotPolOne (PolarAngles 1 0) where

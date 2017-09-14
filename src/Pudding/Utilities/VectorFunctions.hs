@@ -2,24 +2,17 @@ module Pudding.Utilities.VectorFunctions
 ( pairApply
 ) where
 
-import qualified Data.Vector as V
+import qualified Data.Vector.Unboxed as U
 
-pairElement :: (V.Vector a)
-            -> (a -> a -> b)
-            -> Int
-            -> a
-            -> (V.Vector b)
-pairElement v f idx el =
-  V.map (f el) $ V.drop (idx + 1) v
-
-pairUp :: (a -> a -> b) -> (V.Vector a) -> (V.Vector (V.Vector b))
-pairUp f v = V.imap (pairElement v f) v
-
-pairApply :: (b -> b -> b)
+pairApply :: (U.Unbox a, U.Unbox b)
+          => (b -> b -> b)
           -> b
           -> (a -> a -> b)
-          -> (V.Vector a)
+          -> (U.Vector a)
           -> b
-pairApply combine neutral f v =
-  folder $ V.map folder (pairUp f v) where
-    folder = V.foldl combine neutral
+pairApply combine neutral f v = U.ifoldl'
+  (\acc i p -> U.foldl' (\acc' q -> combine acc' $ f p q)
+               acc
+               (U.drop (i + 1) v))
+  neutral
+  v

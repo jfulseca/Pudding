@@ -4,6 +4,8 @@ module Pudding.Types.Configuration
 , Samples
 , emptySphere
 , generateSphereConfiguration
+, getAngles
+, getSpinors
 , swap
 ) where
 

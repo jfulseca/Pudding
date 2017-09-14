@@ -1,3 +1,9 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
+
 module Pudding.Types.Internal.PolarAngles
 
 ( Angle
@@ -14,7 +20,9 @@ module Pudding.Types.Internal.PolarAngles
 ) where
 
 import Data.Complex (Complex((:+)), realPart)
+import Data.Vector.Unboxed.Deriving
 import Pudding.Utilities.ComplexFunctions
+import Pudding.Utilities.FloatEq
 import Pudding.Utilities.DoubleFunctions
 
 type Angle = Double
@@ -66,23 +74,23 @@ normalize (PolarAngles theta phi) =
 
 polarAnglesEq :: PolarAngles -> PolarAngles -> Bool
 polarAnglesEq a1 a2
-  | theta1' `doubleEq` 0 = theta2' `doubleEq` 0
-  | theta2' `doubleEq` 0 = theta1' `doubleEq` 0
-  | theta1' `doubleEq` pi = theta2' `doubleEq` pi
-  | theta2' `doubleEq` 0 = theta1' `doubleEq` pi
-  | otherwise = theta1' `doubleEq` theta2' && phi1' `doubleEq` phi2'
+  | theta1' ~= 0 = theta2' ~= 0
+  | theta2' ~= 0 = theta1' ~= 0
+  | theta1' ~= pi = theta2' ~= pi
+  | theta2' ~= 0 = theta1' ~= pi
+  | otherwise = theta1' ~= theta2' && phi1' ~= phi2'
   where PolarAngles theta1' phi1' = normalize a1
         PolarAngles theta2' phi2' = normalize a2
 
 spinorCoordinatesEq :: SpinorCoordinates -> SpinorCoordinates -> Bool
 spinorCoordinatesEq (SpinorCoordinates u1 v1) (SpinorCoordinates u2 v2) =
-  u1 `complexEq` u2 && v1 `complexEq` v2
+  u1 ~= u2 && v1 ~= v2
 
-instance Eq PolarAngles where
-  (==) = polarAnglesEq
+instance FloatEq PolarAngles where
+  (~=) = polarAnglesEq
 
-instance Eq SpinorCoordinates where
-  (==) = spinorCoordinatesEq
+instance FloatEq SpinorCoordinates where
+  (~=) = spinorCoordinatesEq
 
 rotate :: PolarAngles -> PolarAngles -> PolarAngles
 rotate (PolarAngles theta1 phi1) (PolarAngles theta2 phi2) =
@@ -91,3 +99,14 @@ rotate (PolarAngles theta1 phi1) (PolarAngles theta2 phi2) =
 placeOnSphere :: Angle -> Angle -> PolarAngles
 placeOnSphere theta phi =
   normalize (PolarAngles theta phi)
+
+derivingUnbox "PolarAngles"
+  [t| PolarAngles -> (Angle, Angle) |]
+  [| \(PolarAngles { polar, azimuthal }) -> (polar, azimuthal) |]
+  [| \(polar, azimuthal) -> PolarAngles { polar, azimuthal } |]
+
+derivingUnbox "SpinorCoordinates"
+  [t| SpinorCoordinates -> (Complex Double, Complex Double) |]
+  [| \(SpinorCoordinates { uCoordinate, vCoordinate }) -> (uCoordinate, vCoordinate) |]
+  [| \(uCoordinate, vCoordinate) -> SpinorCoordinates { uCoordinate, vCoordinate } |]
+

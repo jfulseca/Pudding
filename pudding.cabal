@@ -31,6 +31,7 @@ executable pudding
                     ,  Pudding.Types.Internal.PolarAngles
                     ,  Pudding.Utilities.ComplexFunctions
                     ,  Pudding.Utilities.DoubleFunctions
+                    ,  Pudding.Utilities.FloatEq
                     ,  Pudding.Utilities.RandomFunctions
                     ,  Pudding.Utilities.Separate
                     ,  Pudding.Utilities.VectorFunctions
@@ -38,7 +39,9 @@ executable pudding
                      , binary
                      , bytestring
                      , random
+                     , statistics
                      , vector
+                     , vector-th-unbox
   hs-source-dirs:      src
   default-language:    Haskell2010
   ghc-options:         -Wall
@@ -46,14 +49,15 @@ executable pudding
 test-suite test
   type:                exitcode-stdio-1.0
   main-is:             Main/test.hs
-  other-modules:       Pudding.Observables.SimpleObservable
-                    ,  Pudding.Observables.Energy
+  other-modules:       Pudding.Observables.Energy
+                    ,  Pudding.Observables.Observable
+                    ,  Pudding.Observables.SimpleObservable
                     ,  Pudding.Types.Internal.Configuration
                     ,  Pudding.Types.Internal.PolarAngles
                     ,  Pudding.Types.Configuration
                     ,  Pudding.Types.PolarAngles
                     ,  Pudding.Test.Aux
-                    ,  Pudding.Test.Observables.Energy
+--                    ,  Pudding.Test.Observables.Energy
                     ,  Pudding.Test.Observables.SimpleObservable
                     ,  Pudding.Test.Types.Configuration
                     ,  Pudding.Test.Types.PolarAngles
@@ -62,13 +66,18 @@ test-suite test
                     ,  Pudding.Test.Utilities.VectorFunctions
                     ,  Pudding.Utilities.DoubleFunctions
                     ,  Pudding.Utilities.ComplexFunctions
+                    ,  Pudding.Utilities.FloatEq
                     ,  Pudding.Utilities.RandomFunctions
+                    ,  Pudding.Utilities.Separate
                     ,  Pudding.Utilities.VectorFunctions
   build-depends:       base >= 4.6
-                    , HTF
-                    , HUnit
-                    , random
-                    , vector
+                     , HTF
+                     , HUnit
+                     , mtl
+                     , random
+                     , statistics
+                     , vector
+                     , vector-th-unbox
   hs-source-dirs:      src
   default-language:    Haskell2010
   ghc-options:         -Wall -Wno-missing-signatures

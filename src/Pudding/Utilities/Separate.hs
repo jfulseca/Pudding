@@ -1,41 +1,34 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Pudding.Utilities.Separate
-( Separate
-, neutral
-, sadd
-, sdiv
-, smul
-, sscale
-, ssqrt
-, ssub
+( Separate(..)
 ) where
 
-import Data.Complex (Complex(..))
+import Data.Complex (Complex(..), imagPart, realPart)
+import qualified Data.Vector.Unboxed as U
+import Pudding.Observables.Observable (Result(..))
+import Statistics.Sample (meanVariance)
 
-class Separate a where
-  neutral :: a
-  sadd :: a -> a -> a
-  sdiv :: a -> a -> a
-  smul :: a -> a -> a
-  sscale :: Double -> a -> a
-  ssqrt :: a -> a
-  ssub :: a -> a -> a
+class (U.Unbox a) => Separate a where
+  estimateSimple :: (U.Vector a) -> (Result a)
+
+toResult :: (Double, Double) -> (Result Double)
+toResult (mean, variance) =
+  Result {
+    mean,
+    stdDev = sqrt variance
+  }
 
 instance Separate Double where
-  neutral = 0
-  sadd = (+)
-  sdiv = (/)
-  smul = (*)
-  sscale = (*)
-  ssqrt = sqrt
-  ssub = (-)
+  estimateSimple = toResult . meanVariance
 
-instance (RealFloat a, Separate a) => Separate (Complex a) where
-  neutral = 0 :+ 0
-  sadd = (+)
-  (x1 :+ y1) `sdiv` (x2 :+ y2) =
-    (x1 / x2) :+ (y1 / y2)
-  (x1 :+ y1) `smul` (x2 :+ y2) =
-    (x1 * x2) :+ (y1 * y2)
-  d `sscale` z = (sscale d) <$> z
-  ssqrt z = sqrt <$> z
-  ssub = (-)
+instance (Separate a) => Separate (Complex a) where
+  estimateSimple cs = let
+    Result { mean = rMean, stdDev = rStdDev } =
+      estimateSimple $ U.map realPart cs
+    Result { mean = iMean, stdDev = iStdDev } =
+      estimateSimple $ U.map imagPart cs
+    in Result {
+      mean = rMean :+ iMean,
+      stdDev = rStdDev :+ iStdDev
+    }

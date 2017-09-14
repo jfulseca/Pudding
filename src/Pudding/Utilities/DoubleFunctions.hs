@@ -1,8 +1,8 @@
 module Pudding.Utilities.DoubleFunctions
-(
-  doubleEq
-, fmod
+( fmod
 ) where
+
+import Pudding.Utilities.FloatEq
 
 roundDown :: Double -> Double
 roundDown = (fromIntegral :: Int -> Double) . floor
@@ -19,3 +19,6 @@ compareDouble precision d1 d2 =
 doubleEq :: Double -> Double -> Bool
 doubleEq 0 d = abs d < 5e-11
 doubleEq d1 d2 = compareDouble 5e-11 d1 d2
+
+instance FloatEq Double where
+  (~=) = doubleEq

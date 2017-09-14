@@ -1,12 +1,14 @@
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
 
 module Pudding.Test.Utilities.VectorFunctions
-(htf_thisModulesTests) where
+(listPairApply, htf_thisModulesTests) where
 
-import qualified Data.Vector as V
+import Data.List (foldl')
+import qualified Data.Vector.Unboxed as V
 import Test.Framework
 import Pudding.Test.Types.PolarAngles ()
 import Pudding.Types.PolarAngles
+import Pudding.Utilities.FloatEq
 import Pudding.Utilities.ComplexFunctions (cabs)
 import Pudding.Utilities.VectorFunctions
 
@@ -16,34 +18,28 @@ listPairApply :: (b -> b -> b)
               -> [a]
               -> b
 listPairApply combine neutral f l =
-  folder $ map folder paired where
-    folder = foldl combine neutral
-    paired = listPairUp f l
-    listPairUp _ [] = []
-    listPairUp g m@(_:xs) =
-      (listPairElement g m):(listPairUp g xs)
-    listPairElement _ [] = []
-    listPairElement _ [_] = []
-    listPairElement h (y:ys) = map (h y) ys
+  foldl' combine neutral $
+    let n = length l in
+    [f (l!!i) (l!!j) | i <- [0..(n-1)], j <- [(i+1)..(n-1)] ]
 
-checkPairApplied :: (Eq b)
+checkPairApplied :: (Show b, FloatEq b, V.Unbox a, V.Unbox b)
                  => (b -> b -> b)
                  -> b
                  -> (a -> a -> b)
                  -> [a]
                  -> Bool
 checkPairApplied combine neutral f l =
-  pairApplied == listApplied where
-    pairApplied = pairApply combine neutral f $ V.fromList l
-    listApplied = listPairApply combine neutral f l
+  let pairApplied = pairApply combine neutral f $ V.fromList l
+      listApplied = listPairApply combine neutral f l
+  in pairApplied ~= listApplied
 
 prop_pairMultAddInt :: [Int] -> Bool
 prop_pairMultAddInt =
   checkPairApplied (+) 0 (*)
 
-prop_pairAddMultDouble :: [Double] -> Bool
-prop_pairAddMultDouble =
-  checkPairApplied (*) 1 (+)
+prop_pairAddSubDouble :: [Double] -> Bool
+prop_pairAddSubDouble =
+  checkPairApplied (-) 1 (+)
 
 prop_pairMultAddSpinor :: [PolarAngles] -> Bool
 prop_pairMultAddSpinor angleList =
