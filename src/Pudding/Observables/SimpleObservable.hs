@@ -12,7 +12,7 @@ import Pudding.Utilities.Separate
 
 type SimpleObservable a = Configuration -> a
 
-liftSimple :: (Separate a, U.Unbox a) => (SimpleObservable a) -> (Observable a)
-liftSimple obs = \samples ->
-  estimateSimple . U.fromList $ map obs samples
+liftSimple :: (Separate a, U.Unbox a) => Estimator a -> SimpleObservable a -> Observable a
+liftSimple est obs = \samples ->
+  est . U.fromList $ map obs samples
 

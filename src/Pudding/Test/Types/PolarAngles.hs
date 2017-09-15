@@ -8,7 +8,6 @@ import Test.Framework
 import Pudding.Test.Aux (assertTrue)
 import Pudding.Types.Internal.PolarAngles
 import Pudding.Utilities.DoubleFunctions
---import Pudding.Utilities.ComplexFunctions
 import Pudding.Utilities.FloatEq
 
 instance Arbitrary PolarAngles where
