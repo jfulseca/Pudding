@@ -10,4 +10,4 @@ data Result a = Result {
 , stdDev :: a
 } deriving (Eq, Show)
 
-type Observable a = Samples -> (Result a)
+type Observable a = Samples -> Either String (Result a)

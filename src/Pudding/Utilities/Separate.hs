@@ -10,7 +10,7 @@ import qualified Data.Vector.Unboxed as U
 import Pudding.Observables.Observable (Result(..))
 import qualified Statistics.Sample as S
 
-type Estimator a = U.Vector a -> Result a
+type Estimator a = U.Vector a -> Either String (Result a)
 
 class (U.Unbox a) => Separate a where
   estimateSimple :: Estimator a
@@ -23,24 +23,27 @@ toResult (mean, variance) =
     stdDev = sqrt variance
   }
 
-getBlocks :: Int -> (U.Vector Double) -> (U.Vector Double)
-getBlocks n u =
+getBlocks :: Int -> (U.Vector Double) -> Either String (U.Vector Double)
+getBlocks n u = do
   let nBlocks = (U.length u) `quot` n
-      gen k = S.mean $ U.slice (k * n) n u
-  in U.generate nBlocks gen
+  let gen k = S.mean $ U.slice (k * n) n u
+  if nBlocks < 1
+    then Left $ (show n) ++ "is too many values per block for " ++ (show $ U.length u) ++ " values"
+    else return $ U.generate nBlocks gen
 
 instance Separate Double where
-  estimateSimple = toResult . S.meanVariance
-  blockEstimateSimple n xs =
-    estimateSimple $ getBlocks n xs
+  estimateSimple = Right . toResult . S.meanVariance
+  blockEstimateSimple n xs = do
+    blocks <- getBlocks n xs
+    estimateSimple blocks
 
 complexify :: (Separate a) => Estimator a -> Estimator (Complex a)
-complexify f cs = let
-  Result { mean = rMean, stdDev = rStdDev } =
+complexify f cs = do
+  Result { mean = rMean, stdDev = rStdDev } <-
     f $ U.map realPart cs
-  Result { mean = iMean, stdDev = iStdDev } =
+  Result { mean = iMean, stdDev = iStdDev } <-
     f $ U.map imagPart cs
-  in Result {
+  Right $ Result {
     mean = rMean :+ iMean,
     stdDev = rStdDev :+ iStdDev
   }

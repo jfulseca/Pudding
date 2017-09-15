@@ -6,6 +6,7 @@ module Pudding.Test.Observables.SimpleObservable
 (htf_thisModulesTests) where
 
 import Data.Complex (Complex(..))
+import Data.Either (isLeft, isRight)
 import qualified Data.Vector.Unboxed as V
 import Pudding.Observables.Observable
 import Pudding.Observables.SimpleObservable
@@ -24,16 +25,31 @@ test_obsOne = assertEqual (1 :: Double) $
 
 prop_liftedObsOne :: (Positive Int) -> (Positive Int) -> Int -> Bool
 prop_liftedObsOne (Positive n) (Positive k) genInt =
-  mean ~= 1.0 where
-    samples = getSphereSamples n k genInt  
-    Result { mean } = liftSimple estimateSimple testObsOne $ samples
+  let samples = getSphereSamples n k genInt  
+      result = liftSimple estimateSimple testObsOne $ samples
+  in either (\_ -> False)
+            (\Result { mean } -> mean ~= 1.0)
+            result
 
 prop_liftedObsOneBlock :: (Positive Int) -> (Positive Int) -> Int -> Property
 prop_liftedObsOneBlock (Positive n) (Positive k) genInt = (n > 10) ==>
-  mean ~= 1.0 where
-    samples = getSphereSamples n k genInt  
-    Result { mean } =
-      liftSimple (blockEstimateSimple (n `quot` 10)) testObsOne $ samples
+  let samples = getSphereSamples n k genInt  
+      result = liftSimple (blockEstimateSimple (n `quot` 10)) testObsOne $ samples
+  in either (\_ -> False)
+            (\Result { mean } -> mean ~= 1.0)
+            result
+
+prop_liftedObsOneBlockSmall :: (Positive Int) -> (Positive Int) -> Int -> Property
+prop_liftedObsOneBlockSmall (Positive n) (Positive b) genInt = (b <= n) ==>
+  let samples = getSphereSamples n 10 genInt  
+      result = liftSimple (blockEstimateSimple b) testObsOne $ samples
+  in isRight result
+
+prop_liftedObsOneBlockLarge :: (Positive Int) -> (Positive Int) -> Int -> Property
+prop_liftedObsOneBlockLarge (Positive n) (Positive b) genInt = (b > n) ==>
+  let samples = getSphereSamples n 10 genInt  
+      result = liftSimple (blockEstimateSimple b) testObsOne $ samples
+  in isLeft result
 
 checkSimpleObservable :: (Eq a, V.Unbox a, Separate a) => (Configuration -> a) -> (Positive Int) -> (Positive Int) -> Int -> Bool
 checkSimpleObservable f (Positive n) (Positive k) genInt =
