@@ -1,16 +1,13 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module Pudding.Utilities.Separate
-( Estimator
-, Separate(..)
+module Pudding.Observables.Separate
+( Separate(..)
 ) where
 
 import Data.Complex (Complex(..), imagPart, realPart)
 import qualified Data.Vector.Unboxed as U
-import Pudding.Observables.Observable (Result(..))
+import Pudding.Observables.Observable (Estimator, Result(..))
 import qualified Statistics.Sample as S
-
-type Estimator a = U.Vector a -> Either String (Result a)
 
 class (U.Unbox a) => Separate a where
   neutral :: a

@@ -7,8 +7,8 @@ module Pudding.Observables.SimpleObservable
 
 import qualified Data.Vector.Unboxed as U
 import Pudding.Observables.Observable
+import Pudding.Observables.Separate
 import Pudding.Types.Configuration (Configuration)
-import Pudding.Utilities.Separate
 
 type SimpleObservable a = Configuration -> a
 

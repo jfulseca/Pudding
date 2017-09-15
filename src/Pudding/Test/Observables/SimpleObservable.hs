@@ -5,17 +5,17 @@
 
 module Pudding.Test.Observables.SimpleObservable
 (htf_thisModulesTests) where
-import Debug.Trace
+
 import Data.Complex (Complex(..))
 import Data.Either (isLeft, isRight)
 import qualified Data.Vector.Unboxed as V
 import Pudding.Observables.Observable
+import Pudding.Observables.Separate
 import Pudding.Observables.SimpleObservable
 import Pudding.Test.Aux (getSphere, getSphereSamples)
 import Pudding.Types.Configuration
 import Pudding.Types.Internal.PolarAngles
 import Pudding.Utilities.FloatEq
-import Pudding.Utilities.Separate
 import Test.Framework hiding (Result)
 
 testObsOne :: (SimpleObservable Double)
@@ -52,9 +52,9 @@ prop_liftedObsOneBlockLarge (Positive n) (Positive b) genInt = (b > n) ==>
       result = liftSimple (blockEstimateSimple b) testObsOne $ samples
   in isLeft result
 
-checkSimpleObservable :: (Show a, FloatEq a, Eq a, V.Unbox a, Separate a) => (Configuration -> a) -> (Positive Int) -> (Positive Int) -> Int -> Bool
+checkSimpleObservable :: (FloatEq a, V.Unbox a, Separate a) => (Configuration -> a) -> (Positive Int) -> (Positive Int) -> Int -> Bool
 checkSimpleObservable f (Positive n) (Positive k) genInt =
-  result == resultCheck
+  result ~= resultCheck
   where samples = getSphereSamples n k genInt
         result = liftSimple estimateSimple f $ samples
         resultCheck =
@@ -66,7 +66,7 @@ sumTheta (Sphere { angles }) =
   V.foldl (\acc (PolarAngles { polar }) -> acc + polar) 0.0 angles
 
 prop_sumTheta :: (Positive Int) -> (Positive Int) -> Int -> Bool
-prop_sumTheta = trace "propsumtheta" $ checkSimpleObservable sumTheta
+prop_sumTheta = checkSimpleObservable sumTheta
 
 mulV :: Configuration -> (Complex Double)
 mulV (Sphere { spinors }) =
@@ -90,7 +90,7 @@ checkSkew eResult eBlockResult = do
   blockResult <- eBlockResult
   return $ withinBounds result blockResult
 
-checkSimpleBlockMean :: (Show a, FloatEq a, Eq a, V.Unbox a, Separate a) => (Configuration -> a) -> (Positive Int) -> (Positive Int) -> Int -> Bool
+checkSimpleBlockMean :: (FloatEq a, Eq a, V.Unbox a, Separate a) => (Configuration -> a) -> (Positive Int) -> (Positive Int) -> Int -> Bool
 checkSimpleBlockMean f (Positive n) (Positive b) genInt
   | b > n = isLeft blockResult
   | b `divides` n = blockMean ~= mean
