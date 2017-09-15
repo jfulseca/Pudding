@@ -1,10 +1,11 @@
+{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
 
 module Pudding.Test.Observables.SimpleObservable
 (htf_thisModulesTests) where
-
+import Debug.Trace
 import Data.Complex (Complex(..))
 import Data.Either (isLeft, isRight)
 import qualified Data.Vector.Unboxed as V
@@ -51,20 +52,21 @@ prop_liftedObsOneBlockLarge (Positive n) (Positive b) genInt = (b > n) ==>
       result = liftSimple (blockEstimateSimple b) testObsOne $ samples
   in isLeft result
 
-checkSimpleObservable :: (Eq a, V.Unbox a, Separate a) => (Configuration -> a) -> (Positive Int) -> (Positive Int) -> Int -> Bool
+checkSimpleObservable :: (Show a, FloatEq a, Eq a, V.Unbox a, Separate a) => (Configuration -> a) -> (Positive Int) -> (Positive Int) -> Int -> Bool
 checkSimpleObservable f (Positive n) (Positive k) genInt =
-  result == resultCheck where
-  samples = getSphereSamples n k genInt
-  result = liftSimple estimateSimple f $ samples
-  resultCheck = (estimateSimple . V.fromList) $
-    map f samples
+  result == resultCheck
+  where samples = getSphereSamples n k genInt
+        result = liftSimple estimateSimple f $ samples
+        resultCheck =
+          (estimateSimple . V.fromList) $
+            map f samples
 
 sumTheta :: Configuration -> Double
 sumTheta (Sphere { angles }) =
   V.foldl (\acc (PolarAngles { polar }) -> acc + polar) 0.0 angles
 
 prop_sumTheta :: (Positive Int) -> (Positive Int) -> Int -> Bool
-prop_sumTheta = checkSimpleObservable sumTheta
+prop_sumTheta = trace "propsumtheta" $ checkSimpleObservable sumTheta
 
 mulV :: Configuration -> (Complex Double)
 mulV (Sphere { spinors }) =
@@ -74,3 +76,38 @@ mulV (Sphere { spinors }) =
 
 prop_mulV :: (Positive Int) -> (Positive Int) -> Int -> Bool
 prop_mulV = checkSimpleObservable mulV
+
+divides :: Int -> Int -> Bool
+divides n = (==0) . (flip mod $ n)
+
+getMean :: Either String (Result a) -> Maybe a
+getMean = either (\_ -> Nothing :: Maybe a)
+                 (\Result { mean } -> Just mean)
+
+checkSkew :: (Separate a) => Either String (Result a) -> Either String (Result a) -> Either String Bool
+checkSkew eResult eBlockResult = do
+  result <- eResult
+  blockResult <- eBlockResult
+  return $ withinBounds result blockResult
+
+checkSimpleBlockMean :: (Show a, FloatEq a, Eq a, V.Unbox a, Separate a) => (Configuration -> a) -> (Positive Int) -> (Positive Int) -> Int -> Bool
+checkSimpleBlockMean f (Positive n) (Positive b) genInt
+  | b > n = isLeft blockResult
+  | b `divides` n = blockMean ~= mean
+  | otherwise =
+      either (\_ -> False)
+             id
+             (checkSkew result blockResult)
+  where samples = getSphereSamples n 10 genInt
+        blockResult = liftSimple (blockEstimateSimple b) f $ samples
+        blockMean = getMean blockResult
+        result = liftSimple estimateSimple f $ samples
+        mean = getMean result
+
+prop_sumThetaBlockMean :: (Positive Int) -> (Positive Int) -> Int -> Bool
+prop_sumThetaBlockMean =
+  checkSimpleBlockMean sumTheta
+
+prop_mulVBlockMean :: (Positive Int) -> (Positive Int) -> Int -> Bool
+prop_mulVBlockMean =
+  checkSimpleBlockMean mulV

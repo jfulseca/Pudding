@@ -10,3 +10,8 @@ class FloatEq a where
 
 instance FloatEq Int where
   (~=) = (==)
+
+instance (FloatEq a) => FloatEq (Maybe a) where
+  Nothing ~= Nothing = True
+  (Just x) ~= (Just y) = x ~= y
+  _ ~= _ = False
